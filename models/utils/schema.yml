@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: team_members_map
+    description: "Table containing information about trades.org members, including their emails, Linear and GitHub details."
+    columns:
+      - name: id
+        description: "Primary Key (PK) for this table, representing the member's organizational email address."
+        data_tests:
+          - unique
+          - not_null

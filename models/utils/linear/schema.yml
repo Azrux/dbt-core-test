@@ -1,0 +1,25 @@
+version: 2
+
+models:
+  - name: issues_activity
+    description: "Table containing activities made by members related to Linear tasks (issues)"
+    columns:
+      - name: member_id
+        description: "The email address of the organization member associated with the activity"
+        data_tests:
+          - not_null
+
+      - name: date
+        description: "The date and time when the activity took place"
+        data_tests:
+          - not_null
+
+      - name: issue_id
+        description: "The unique identifier of the task associated with the activity"
+        data_tests:
+          - not_null
+
+      - name: activities
+        description: "Details of the activities, stored as an array of JSON, which may include information such as action type, description and others"
+        data_tests:
+          - not_null
