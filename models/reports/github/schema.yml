@@ -1,0 +1,59 @@
+version: 2
+
+models:
+  - name: commit_activities
+    description: "Table containing each commit created in the organization."
+    columns:
+      - name: committer_date
+        description: "The date when the commit was made by the committer"
+        data_tests:
+          - not_null
+
+      - name: member_id
+        description: "The ID of the organization member based on their organization email and the person who performed the commit"
+        data_tests:
+          - not_null
+
+      - name: sha
+        description: "The unique GitHub commit hash (SHA)"
+        data_tests:
+          - unique
+          - not_null
+
+      - name: repository_name
+        description: "The name of the repository in the organization"
+        data_tests:
+          - not_null
+
+      - name: branch_name
+        description: "The name of the branch where the commit was made"
+        data_tests:
+          - not_null
+
+      - name: message
+        description: "The commit message describing the changes made"
+        data_tests:
+          - not_null
+
+      - name: number_additions
+        description: "The number of lines added in the commit"
+        data_tests:
+          - not_null
+
+      - name: number_changes
+        description: "The total number of changes (additions, deletions, modifications) in the commit"
+        data_tests:
+          - not_null
+
+      - name: number_deletions
+        description: "The number of lines deleted in the commit"
+        data_tests:
+          - not_null
+
+      - name: changes
+        description: "JSON object containing the status of changes, the number of changes, additions, deletions, and the filename"
+        data_tests:
+          - not_null
+
+  - name: pr_activities
+    description: "Table containing each commit created in the organization."
