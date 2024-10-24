@@ -3,11 +3,11 @@ team_performance_manager_etl:
   outputs:
     production:
       type: postgres
-      host: "{{ env_var('DB_HOST') }}"
-      user: "{{ env_var('DB_USER') }}"
-      password: "{{ env_var('DB_PASSWORD') }}"
-      port: "{{ env_var('DB_PORT') | int }}"
-      dbname: "{{ env_var('DB_NAME') }}" # or database instead of dbname
+      host: "{{ env_var('DBT_DB_HOST') }}"
+      user: "{{ env_var('DBT_DB_USER') }}"
+      password: "{{ env_var('DBT_DB_PASSWORD') }}"
+      port: "{{ env_var('DBT_DB_PORT') | int }}"
+      dbname: "{{ env_var('DBT_DB_NAME') }}" # or database instead of dbname
       schema: "{{ env_var('DBT_SCHEMA') }}"
       connect_timeout: 10 # default 10 seconds
       # threads: [optional, 1 or more]
