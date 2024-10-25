@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: commit_activities
+  - name: github_commit_activities
     description: "Table containing each commit created in the organization."
     columns:
       - name: committer_date
@@ -55,5 +55,11 @@ models:
         data_tests:
           - not_null
 
-  - name: pr_activities
+  - name: github_pr_activities
     description: "Table containing each commit created in the organization."
+  
+  - name: linear_issue_activities
+    description: "Table containing all changes and updates made to Linear issues."
+
+  - name: linear_project_activities
+    description: "Table containing all changes and updates made to Linear projects."

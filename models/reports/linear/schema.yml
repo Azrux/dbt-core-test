@@ -1,8 +1,0 @@
-version: 2
-
-models:
-  - name: issue_activities
-    description: "Table containing all changes and updates made to Linear issues."
-
-  - name: project_activities
-    description: "Table containing all changes and updates made to Linear projects."

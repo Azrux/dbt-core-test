@@ -83,23 +83,6 @@ WITH
         WHERE ih.from_team_id IS NOT NULL AND ih.to_team_id IS NOT NULL
         GROUP BY tm.id, DATE(ih.updated_at), ih.issue_id, from_t.name, to_t.name
     ),
-    change_status AS (
-        SELECT
-            tm.id AS member_id,
-            DATE(ih.updated_at) AS date,
-            ih.issue_id,
-            jsonb_build_object(
-                'action_type', 'change_status',
-                'from_status', from_s.name,
-                'to_status', to_s.name
-            ) AS activity
-        FROM linear.issue_history ih
-        JOIN static.team_members tm ON ih.actor_id = tm.linear_user_id
-        JOIN linear.workflow_state as from_s ON from_s.id = from_state_id
-        JOIN linear.workflow_state as to_s ON to_s.id = to_state_id
-        WHERE ih.from_state_id IS NOT NULL AND ih.to_state_id IS NOT NULL
-        GROUP BY tm.id, DATE(ih.updated_at), ih.issue_id, from_s.name, to_s.name
-    ),
     change_project AS (
         SELECT
             tm.id AS member_id,
@@ -217,45 +200,6 @@ WITH
         WHERE started_triage_at IS NOT NULL
         GROUP BY tm.id, DATE(i.started_triage_at), i.id
     ),
-    remove_from_triage AS (
-        SELECT
-            tm.id AS member_id,
-            DATE(i.triaged_at) AS date,
-            i.id AS issue_id,
-            jsonb_build_object(
-                'action_type', 'remove_from_triage'
-            ) AS activity
-        FROM linear.issue i
-        JOIN static.team_members tm ON i.assignee_id = tm.linear_user_id
-        WHERE triaged_at IS NOT NULL
-        GROUP BY tm.id, DATE(i.triaged_at), i.id
-    ),
-    complete_issue AS (
-        SELECT
-            tm.id AS member_id,
-            DATE(i.completed_at) AS date,
-            i.id AS issue_id,
-            jsonb_build_object(
-                'action_type', 'complete_issue'
-            ) AS activity
-        FROM linear.issue i
-        JOIN static.team_members tm ON i.assignee_id = tm.linear_user_id
-        WHERE completed_at IS NOT NULL
-        GROUP BY tm.id, DATE(i.completed_at), i.id
-    ),
-    cancel_issue AS (
-        SELECT
-            tm.id AS member_id,
-            DATE(i.canceled_at) AS date,
-            i.id AS issue_id,
-            jsonb_build_object(
-                'action_type', 'cancel_issue'
-            ) AS activity
-        FROM linear.issue i
-        JOIN static.team_members tm ON i.assignee_id = tm.linear_user_id
-        WHERE canceled_at IS NOT NULL
-        GROUP BY tm.id, DATE(i.canceled_at), i.id
-    ),
     add_attachment AS (
         SELECT
             tm.id AS member_id,
@@ -271,19 +215,6 @@ WITH
         JOIN static.team_members tm ON i.assignee_id = tm.linear_user_id
         JOIN linear.attachment a ON a.issue_id = i.id
         GROUP BY tm.id, DATE(i.updated_at), i.id, a.title, a.source, a.url
-    ),
-    archive_issue AS (
-        SELECT
-            tm.id AS member_id,
-            DATE(i.archived_at) AS date,
-            i.id AS issue_id,
-            jsonb_build_object(
-                'action_type', 'archive_issue'
-            ) AS activity
-        FROM linear.issue i
-        JOIN static.team_members tm ON i.assignee_id = tm.linear_user_id
-        WHERE archived_at IS NOT NULL
-        GROUP BY tm.id, DATE(i.archived_at), i.id
     ),
     create_comment AS (
         SELECT
@@ -338,6 +269,35 @@ WITH
         LEFT JOIN linear.comment pc ON pc.id = c.parent_id
         WHERE c.edited_at IS NOT NULL
         GROUP BY tm.id, DATE(c.edited_at), i.id, c.body, pc.body, c.url
+    ),
+    change_status AS (
+        SELECT
+            tm.id AS member_id,
+            DATE(ih.updated_at) AS date,
+            ih.issue_id,
+            jsonb_build_object(
+                'action_type', (
+                    CASE
+                        WHEN to_s.name = 'Paused' THEN 'pause_issue'
+                        WHEN to_s.name = 'In Review' THEN 'move_to_in_review'
+                        WHEN to_s.name = 'In Progress' THEN 'move_to_in_progress'
+                        WHEN to_s.name = 'Duplicate' THEN 'mark_as_duplicate'
+                        WHEN to_s.name = 'Blocked' THEN 'mark_as_blocked'
+                        WHEN to_s.name = 'Backlog' THEN 'move_to_backlog'
+                        WHEN to_s.name = 'Todo' THEN 'move_to_todo'
+                        WHEN to_s.name = 'Done' THEN 'complete_issue'
+                        WHEN to_s.name = 'Triage' THEN 'move_to_triage'
+                        WHEN to_s.name = 'Canceled' THEN 'cancel_issue'
+                    END
+                ),
+                'previous_status', from_s.name
+            ) AS activity
+        FROM linear.issue_history ih
+        JOIN static.team_members tm ON ih.actor_id = tm.linear_user_id
+        JOIN linear.workflow_state as from_s ON from_s.id = from_state_id
+        JOIN linear.workflow_state as to_s ON to_s.id = to_state_id
+        WHERE ih.from_state_id IS NOT NULL AND ih.to_state_id IS NOT NULL
+        GROUP BY tm.id, DATE(ih.updated_at), ih.issue_id, from_s.name, to_s.name
     )
 SELECT * FROM update_description
 UNION ALL
@@ -361,19 +321,11 @@ SELECT * FROM change_assignee
 UNION ALL
 SELECT * FROM change_priority
 UNION ALL
-SELECT * FROM create_issue
-UNION ALL
 SELECT * FROM start_issue
 UNION ALL
 SELECT * FROM move_to_triage
-UNION ALL     
-SELECT * FROM remove_from_triage
-UNION ALL  
-SELECT * FROM cancel_issue
 UNION ALL  
 SELECT * FROM add_attachment
-UNION ALL  
-SELECT * FROM archive_issue
 UNION ALL  
 SELECT * FROM create_comment
 UNION ALL  

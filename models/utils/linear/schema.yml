@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: issues_activity
+  - name: issues_activities_map
     description: "Table containing activities made by members related to Linear tasks (issues)"
     columns:
       - name: member_id
@@ -19,7 +19,7 @@ models:
         data_tests:
           - not_null
 
-      - name: activities
+      - name: activity
         description: "Details of the activities, stored as an array of JSON, which may include information such as action type, description and others"
         data_tests:
           - not_null

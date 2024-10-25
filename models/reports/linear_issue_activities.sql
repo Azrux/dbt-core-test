@@ -24,7 +24,7 @@ SELECT
     li.trashed,
     json_agg(la.activity) AS activities
 FROM date_range dr
-JOIN {{ref("issues_activity")}} la ON la.date = dr.date
+JOIN {{ref("issues_activity_map")}} la ON la.date = dr.date
 JOIN linear.issue li ON la.issue_id = li.id AND la.issue_id = li.id
 JOIN linear.team t ON t.id = li.team_id
 JOIN linear.project p ON p.id = li.project_id
