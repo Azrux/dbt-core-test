@@ -9,3 +9,24 @@ models:
         data_tests:
           - unique
           - not_null
+
+      - name: first_name
+        description: "The first name of the member"
+        data_tests:
+          - not_null
+
+      - name: last_name
+        description: "The last name of the member"
+        data_tests:
+          - not_null
+
+      - name: display_name
+        description: "The display name of the member"
+        data_tests:
+          - not_null
+
+      - name: metadata
+        description: "The metadata of the member. It includes data from Linear, Github, Slack and email addresses"
+        data_tests:
+          - not_null
+

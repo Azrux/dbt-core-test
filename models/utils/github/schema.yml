@@ -3,36 +3,12 @@ version: 2
 models:
   - name: filtered_repositories
     description: "Table containing GitHub repositories filtered by the 'trades-org' organization."
-    columns:
-      - name: id
-        description: "Primary Key (PK) for this table, representing the repository ID."
-        data_tests:
-          - unique
-          - not_null
   
   - name: filtered_commits
     description: "Table containing GitHub commits filtered by repositories in the 'trades-org' organization."
-    columns:
-      - name: id
-        description: "Primary Key (PK) for this table, representing the commit ID."
-        data_tests:
-          - unique
-          - not_null
 
   - name: filtered_prs
     description: "Table containing GitHub pull requests (PRs) filtered by the 'trades-org' user ID."
-    columns:
-      - name: id
-        description: "Primary Key (PK) for this table, representing the pull request ID."
-        data_tests:
-          - unique
-          - not_null
   
   - name: filtered_issues
     description: "Table containing GitHub issues filtered by repositories in the 'trades-org' organization."
-    columns:
-      - name: id
-        description: "Primary Key (PK) for this table, representing the issue ID."
-        data_tests:
-          - unique
-          - not_null

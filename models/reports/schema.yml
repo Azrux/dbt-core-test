@@ -13,22 +13,26 @@ models:
         description: "The ID of the organization member based on their organization email and the person who performed the commit"
         data_tests:
           - not_null
+          - relationship:
+              to: ref("team_members_map")
+              field: id
 
       - name: sha
         description: "The unique GitHub commit hash (SHA)"
         data_tests:
           - unique
           - not_null
+          - relationship:
+              to: ref("filtered_commits")
+              field: sha
 
       - name: repository_name
-        description: "The name of the repository in the organization"
+        description: "The name of the repository where the commit was made"
         data_tests:
           - not_null
-
-      - name: branch_name
-        description: "The name of the branch where the commit was made"
-        data_tests:
-          - not_null
+          - relationship:
+              to: ref("filtered_repositories")
+              field: name
 
       - name: message
         description: "The commit message describing the changes made"
@@ -57,9 +61,187 @@ models:
 
   - name: github_pr_activities
     description: "Table containing each commit created in the organization."
-  
+    columns:
+      - name: date
+        description: "The date when the PR was created"
+        data_tests:
+          - not_null
+
+      - name: member_id
+        description: "The ID of the organization member based on their organization email and the person who made an action on a PR"
+        data_tests:
+          - not_null
+          - relationship:
+              to: ref("team_members_map")
+              field: id
+
+      - name: pr_id
+        description: "The ID of the PR"
+        data_tests:
+          - not_null
+          - relationship:
+              to: ref("filtered_prs")
+              field: pr_id
+
+      - name: issue_id
+        description: "The ID of the issue"
+        data_tests:
+          - not_null
+          - relationship:
+              to: ref("filtered_issues")
+              field: issue_id
+
+      - name: title
+        description: "The title of the PR"
+        data_tests:
+          - not_null
+
+      - name: description
+        description: "The description of the PR"
+        data_tests:
+          - not_null
+
+      - name: base_repo_name
+        description: "The name of the base repository"
+        data_tests:
+          - not_null
+
+      - name: head_repo_name
+        description: "The name of the head repository"
+        data_tests:
+          - not_null
+
+      - name: base_branch_name
+        description: "The name of the base branch"
+        data_tests:
+          - not_null
+
+      - name: head_branch_name
+        description: "The name of the head branch"
+        data_tests:
+          - not_null
+
+      - name: activities
+        description: "The actions the member made related to the PR."
+        data_tests:
+          - not_null
+
   - name: linear_issue_activities
     description: "Table containing all changes and updates made to Linear issues."
+    columns:
+      - name: date
+        description: "The date when the issue was created"
+        data_tests:
+          - not_null
+
+      - name: member_id
+        description: "The ID of the organization member based on their organization email and the person who made an action on a Linear issue"
+        data_tests:
+          - not_null
+          - relationship:
+              to: ref("team_members_map")
+              field: id
+
+      - name: title
+        description: "The title of the issue"
+        data_tests:
+          - not_null
+
+      - name: description
+        description: "The description of the issue"
+
+      - name: url
+        description: "The URL of the issue"
+        data_tests:
+          - not_null
+
+      - name: project_name
+        description: "The name of the project the issue belongs to"
+        data_tests:
+          - not_null
+
+      - name: team_name
+        description: "The name of the team the issue belongs to"
+        data_tests:
+          - not_null
+
+      - name: priority_label
+        description: "The priority label of the issue"
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ["Urgent", "No priority", "High", "Medium", "Low"]
+
+      - name: estimate
+        description: "The estimate of the issue"
+        data_tests:
+          - accepted_values:
+              values: [0, 1, 2, 3, 4, 5, 8, 16]
+
+      - name: trashed
+        description: "Whether the issue has been trashed"
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+
+      - name: activities
+        description: "The actions the member made related to the issue"
+        data_tests:
+          - not_null
 
   - name: linear_project_activities
     description: "Table containing all changes and updates made to Linear projects."
+    columns:
+      - name: date
+        description: "The date when the project was created"
+        data_tests:
+          - not_null
+
+      - name: member_id
+        description: "The ID of the organization member based on their organization email and the person who made an action on a Linear project"
+        data_tests:
+          - not_null
+          - relationship:
+              to: ref("team_members_map")
+              field: id
+
+      - name: lead
+        description: "The ID of the lead of the project"
+        data_tests:
+          - relationship:
+              to: ref("team_members_map")
+              field: id
+
+      - name: name
+        description: "The name of the project"
+        data_tests:
+          - not_null
+
+      - name: content
+        description: "The content of the project"
+
+      - name: description
+        description: "The description of the project"
+
+      - name: url
+        description: "The URL of the project"
+        data_tests:
+          - not_null
+
+      - name: progress
+        description: "The progress of the project"
+
+      - name: state
+        description: "The state of the project"
+        data_tests:
+          - not_null
+
+      - name: target_date
+        description: "The target date of the project"
+
+      - name: activities
+        description: "The actions the member made related to the project. For more details visit: https://miro.com/app/board/uXjVK1WQa6Y=/?moveToWidget=3458764604081887325&cot=14"
+        data_tests:
+          - not_null
+
