@@ -91,7 +91,7 @@ SELECT
     p.progress,
     p.state,
     p.target_date,
-    a.activities AS activity
+    a.activities AS activities
 FROM date_range dr
 JOIN final_activities a ON a.date = dr.date
 JOIN linear.project p ON p.id = a.project_id

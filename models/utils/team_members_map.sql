@@ -53,6 +53,6 @@ SELECT
             'handle', github_handle,
             'emails', github_emails
         ))
-    ) AS emails_metadata
+    ) AS metadata
 FROM metadata
 ORDER BY id

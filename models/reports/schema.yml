@@ -4,7 +4,7 @@ models:
   - name: github_commit_activities
     description: "Table containing each commit created in the organization."
     columns:
-      - name: committer_date
+      - name: date
         description: "The date when the commit was made by the committer"
         data_tests:
           - not_null
@@ -13,7 +13,7 @@ models:
         description: "The ID of the organization member based on their organization email and the person who performed the commit"
         data_tests:
           - not_null
-          - relationship:
+          - relationships:
               to: ref("team_members_map")
               field: id
 
@@ -22,7 +22,7 @@ models:
         data_tests:
           - unique
           - not_null
-          - relationship:
+          - relationships:
               to: ref("filtered_commits")
               field: sha
 
@@ -30,7 +30,7 @@ models:
         description: "The name of the repository where the commit was made"
         data_tests:
           - not_null
-          - relationship:
+          - relationships:
               to: ref("filtered_repositories")
               field: name
 
@@ -39,18 +39,23 @@ models:
         data_tests:
           - not_null
 
-      - name: number_additions
-        description: "The number of lines added in the commit"
+      - name: total_additions
+        description: "The total number of lines added in the commit"
         data_tests:
           - not_null
 
-      - name: number_changes
+      - name: total_changes
         description: "The total number of changes (additions, deletions, modifications) in the commit"
         data_tests:
           - not_null
 
-      - name: number_deletions
-        description: "The number of lines deleted in the commit"
+      - name: total_deletions
+        description: "The total number of lines deleted in the commit"
+        data_tests:
+          - not_null
+
+      - name: total_files_changed
+        description: "The total number of files changed in the commit"
         data_tests:
           - not_null
 
@@ -71,7 +76,7 @@ models:
         description: "The ID of the organization member based on their organization email and the person who made an action on a PR"
         data_tests:
           - not_null
-          - relationship:
+          - relationships:
               to: ref("team_members_map")
               field: id
 
@@ -79,17 +84,17 @@ models:
         description: "The ID of the PR"
         data_tests:
           - not_null
-          - relationship:
+          - relationships:
               to: ref("filtered_prs")
-              field: pr_id
+              field: id
 
       - name: issue_id
         description: "The ID of the issue"
         data_tests:
           - not_null
-          - relationship:
+          - relationships:
               to: ref("filtered_issues")
-              field: issue_id
+              field: id
 
       - name: title
         description: "The title of the PR"
@@ -98,8 +103,6 @@ models:
 
       - name: description
         description: "The description of the PR"
-        data_tests:
-          - not_null
 
       - name: base_repo_name
         description: "The name of the base repository"
@@ -108,8 +111,6 @@ models:
 
       - name: head_repo_name
         description: "The name of the head repository"
-        data_tests:
-          - not_null
 
       - name: base_branch_name
         description: "The name of the base branch"
@@ -118,8 +119,6 @@ models:
 
       - name: head_branch_name
         description: "The name of the head branch"
-        data_tests:
-          - not_null
 
       - name: activities
         description: "The actions the member made related to the PR."
@@ -138,7 +137,7 @@ models:
         description: "The ID of the organization member based on their organization email and the person who made an action on a Linear issue"
         data_tests:
           - not_null
-          - relationship:
+          - relationships:
               to: ref("team_members_map")
               field: id
 
@@ -181,7 +180,6 @@ models:
       - name: trashed
         description: "Whether the issue has been trashed"
         data_tests:
-          - not_null
           - accepted_values:
               values: [true, false]
 
@@ -202,14 +200,14 @@ models:
         description: "The ID of the organization member based on their organization email and the person who made an action on a Linear project"
         data_tests:
           - not_null
-          - relationship:
+          - relationships:
               to: ref("team_members_map")
               field: id
 
       - name: lead
         description: "The ID of the lead of the project"
         data_tests:
-          - relationship:
+          - relationships:
               to: ref("team_members_map")
               field: id
 

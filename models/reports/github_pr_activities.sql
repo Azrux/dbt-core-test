@@ -282,6 +282,7 @@ SELECT
 FROM date_range dr
 JOIN pr_data pr ON 1 = 1
 JOIN final_activity fa ON fa.pr_id = pr.pr_id AND dr.date = fa.date
+WHERE fa.member_id IS NOT NULL
 GROUP BY 
     dr.date,
     fa.member_id,

@@ -32,7 +32,7 @@ SELECT
     SUM(c.number_changes) AS total_changes,
     SUM(c.number_deletions) AS total_deletions,
     COUNT(DISTINCT c.filename) AS total_files_changed,
-    ARRAY_AGG(c.changes) AS changes_array
+    ARRAY_AGG(c.changes) AS changes
 FROM static.team_members tm
 JOIN commit_data c ON c.author_email = tm.email
 GROUP BY c.date, tm.id, c.sha, c.repository_name, c.message

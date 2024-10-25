@@ -8,7 +8,7 @@ models:
         description: "The email address of the organization member associated with the activity"
         data_tests:
           - not_null
-          - relationship:
+          - relationships:
               to: ref("team_members_map")
               field: id
 
@@ -21,7 +21,7 @@ models:
         description: "The unique identifier of the task associated with the activity"
         data_tests:
           - not_null
-          - relationship:
+          - relationships:
               to: ref("filtered_issues")
               field: id
 
